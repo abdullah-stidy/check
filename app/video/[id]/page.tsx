@@ -15,17 +15,26 @@ import { Separator } from "@/components/ui/separator"
 export default function VideoPage() {
   const params = useParams()
   const router = useRouter()
-  const { id } = params
-  const [topic, setTopic] = useState(null)
+  // Ensure id is a string
+  const id = typeof params.id === "string" ? params.id : params.id[0]
+
+  const [topic, setTopic] = useState<{
+    id: string
+    title: string
+    category: string
+    url: string
+    completed: boolean
+  } | null>(null)
+  
   const [notes, setNotes] = useLocalStorage(`notes-${id}`, "")
-  const [completedTopics, setCompletedTopics] = useLocalStorage("completedTopics", [])
+  const [completedTopics, setCompletedTopics] = useLocalStorage<string[]>("completedTopics", [])
   const [isCompleted, setIsCompleted] = useState(false)
   const [isStudying, setIsStudying] = useState(false)
-  const [studyDuration, setStudyDuration] = useLocalStorage(`study-duration-${id}`, 0)
+  const [studyDuration, setStudyDuration] = useLocalStorage<number>(`study-duration-${id}`, 0)
   const [activeTab, setActiveTab] = useState("video")
 
   // Get YouTube video ID
-  const getYouTubeId = (url) => {
+  const getYouTubeId = (url: string): string | null => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
     const match = url.match(regExp)
     return match && match[2].length === 11 ? match[2] : null
@@ -50,7 +59,7 @@ export default function VideoPage() {
     setIsCompleted(!isCompleted)
   }
 
-  const formatDuration = (seconds) => {
+  const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
     return `${hours}h ${minutes}m`
@@ -70,7 +79,7 @@ export default function VideoPage() {
   const nextTopic = currentIndex < topics.length - 1 ? topics[currentIndex + 1] : null
 
   // Random doodle elements to be placed
-  const Doodle = ({ className }) => {
+  const Doodle: React.FC<{ className: string }> = ({ className }) => {
     const doodles = ["★", "✎", "♡", "☺", "✓", "💩", "✰", "⌇", "○"]
     const randomDoodle = doodles[Math.floor(Math.random() * doodles.length)]
     
@@ -99,14 +108,7 @@ export default function VideoPage() {
       {[...Array(15)].map((_, i) => (
         <Doodle 
           key={i} 
-          className={`
-            top-${Math.floor(Math.random() * 100)}vh 
-            left-${Math.floor(Math.random() * 100)}vw
-            transform rotate-${Math.floor(Math.random() * 360)}
-            text-${Math.random() > 0.5 ? 'gray' : 'blue'}-${Math.floor(Math.random() * 3) + 2}00
-            opacity-${Math.floor(Math.random() * 4) + 1}0
-            text-${Math.floor(Math.random() * 24) + 16}
-          `}
+          className="absolute text-gray-500 opacity-70 rotate-45 top-10vh left-20vw text-24"
         />
       ))}
 
@@ -127,7 +129,7 @@ export default function VideoPage() {
           </div>
           
           <Button
-            variant={isStudying ? "default" : "outline"}
+            variant="outline"
             size="sm"
             className={
               isStudying

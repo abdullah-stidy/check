@@ -1,7 +1,7 @@
 import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "next-themes"; 
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {

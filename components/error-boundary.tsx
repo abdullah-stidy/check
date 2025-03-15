@@ -1,34 +1,44 @@
-"use client"
+"use client";
 
-import React, { Component } from "react"
+import React, { Component, ReactNode, ErrorInfo } from "react";
 
-class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props)
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
     this.state = { 
       hasError: false,
       error: null, 
       errorInfo: null 
-    }
+    };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true }
+    return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // You can also log the error to an error reporting service
-    console.error("ErrorBoundary caught an error", error, errorInfo)
+    console.error("ErrorBoundary caught an error", error, errorInfo);
     this.setState({
       error: error,
       errorInfo: errorInfo
-    })
+    });
   }
 
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
+      // Render any custom fallback UI
       return (
         <div className="min-h-screen flex items-center justify-center bg-white p-4">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 max-w-lg w-full">
@@ -44,11 +54,11 @@ class ErrorBoundary extends Component {
             </button>
           </div>
         </div>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
-export default ErrorBoundary
+export default ErrorBoundary;

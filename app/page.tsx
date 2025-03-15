@@ -14,27 +14,25 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import ErrorBoundary from "@/components/error-boundary"
 
-// Random doodle element as a memo to prevent re-renders
-const Doodle = ({ style }) => {
-  const doodles = ["★", "☆", "✎", "♡", "💩", "✏️", "✌️", "✨"]
-  // Use a ref to keep the doodle consistent between renders
-  const doodleRef = useRef(doodles[Math.floor(Math.random() * doodles.length)])
-  const rotationRef = useRef(`rotate(${Math.random() * 360}deg)`)
-  const sizeRef = useRef(`${Math.random() * 1.5 + 0.8}rem`)
-  
+const Doodle = ({ style }: { style?: React.CSSProperties }) => {
+  const doodles = ["★", "☆", "✎", "♡", "💩", "✏️", "✌️", "✨"];
+  const doodleRef = useRef(doodles[Math.floor(Math.random() * doodles.length)]);
+  const rotationRef = useRef(`rotate(${Math.random() * 360}deg)`);
+  const sizeRef = useRef(`${Math.random() * 1.5 + 0.8}rem`);
+
   return (
-    <div 
+    <div
       className="absolute text-gray-200 opacity-30 select-none"
-      style={{ 
+      style={{
         transform: rotationRef.current,
         fontSize: sizeRef.current,
-        ...style
+        ...style, // Spread props
       }}
     >
       {doodleRef.current}
     </div>
-  )
-}
+  );
+};
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -63,24 +61,25 @@ export default function Home() {
     }
   }, [])
 
-  // Handle tab change safely
-  const handleTabChange = (value) => {
-    if (value !== activeTab) {
-      setActiveTab(value)
-      activeTabRef.current = value
-    }
+const handleTabChange = (value: string) => {
+  if (value !== activeTab) {
+    setActiveTab(value);
+    activeTabRef.current = value;
   }
+};
+
 
   // Don't render anything until client-side hydration is complete
   if (!mounted) {
     return null
   }
 
-  const formatStudyTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    return `${hours}h ${minutes}m`
-  }
+const formatStudyTime = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${minutes}m`;
+};
+
 
   return (
     <ErrorBoundary>
